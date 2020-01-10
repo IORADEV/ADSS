@@ -1,0 +1,10 @@
+.bg-dark-blue {
+    background-color: #263238 !important;
+}
+
+#bg-image {
+  background: url('img/forest-image.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}

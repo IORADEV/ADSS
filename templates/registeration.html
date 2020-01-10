@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href='{% static "stylesheet.css" %}'>
+    <title>{{ title }}</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+  </head>
+  <body style="height: 100vh" class="bg-dark-blue" id="bg-image" ng-app="dss">
+    <!-- http://plnkr.co/edit/FipgiTUaaymm5Mk6HIfn?p=preview -->
+    <script type="text/javascript">
+
+      var app = angular.module('dss', []);
+      app.controller('test_ctrl', function ($scope, $http) {
+
+        $scope.params = {}
+        //$scope.req_show = false
+        var today = new Date();
+        var minAge = 18;
+        $scope.minAge = new Date(today.getFullYear() - minAge, today.getMonth(), today.getDate());
+        $scope.suggestions = function () {
+
+          console.log($scope.params);
+        /*  if ($scope.params.name != null && $scope.params.email !=null && $scope.params.mobile != null && $scope.params.dob != null && $scope.params.address !=null) {
+            $scope.req_show =false
+          }else {
+            $scope.req_show = true
+            $scope.required = "All Fields Required"
+          }*/
+        }
+
+        $scope.user = {};
+        $scope.submitForm = function() {
+        alert("Test")
+        $http({
+          method  : 'POST',
+          url     : '/v1/create_account',
+          data    : $scope.user,
+          headers : { 'Content-Type': 'application/json' }
+         }).then(function(data) {
+            alert(data)
+            if (data.errors) {
+              $scope.errorName = data.errors.name;
+              $scope.errorUserName = data.errors.username;
+              $scope.errorEmail = data.errors.email;
+            } else {
+              $scope.message = data.message;
+              $scope.userError = data.data;
+              console.log($scope.userError)
+              console.log(data)
+            }
+          });
+        };
+
+
+      });
+
+
+      var compareTo = function() {
+              return {
+                  require: "ngModel",
+                  scope: {
+                      otherModelValue: "=compareTo"
+                  },
+                  link: function(scope, element, attributes, ngModel) {
+
+                      ngModel.$validators.compareTo = function(modelValue) {
+                          return modelValue == scope.otherModelValue;
+                      };
+
+                      scope.$watch("otherModelValue", function() {
+                          ngModel.$validate();
+                      });
+                  }
+              };
+          };
+
+        app.directive("compareTo", compareTo);
+    </script>
+    <div class="container">
+      <div class="row justify-content-center" style="height: 20vh">
+        <div class="col-6 text-center pt-5 text-white">
+          <h4>LOGO</h4>
+
+        </div>
+      </div>
+      <div class="row justify-content-center"  ng-controller='test_ctrl'>
+
+        <div class="col-5 border py-2 bg-white">
+          <div class="text-center pb-2">
+            <h6>WELCOME TO DSS</h6>
+
+
+          </div>
+          <form name="signupForm" ng-submit="submitForm()">
+            <!--
+            <div class="form-group">
+              <label for="exampleInputEmail1">Firstname</label>
+              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+
+            </div>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Lastname</label>
+              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+
+            </div>
+          -->
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" class="form-control" name="username" aria-describedby="emailHelp" placeholder="Enter Username" ng-model="user.username" required>
+              <div class="" ng-if='signupForm.username.$dirty'>
+                <small class="text-danger" ng-show="signupForm.username.$error.pattern">Not a valid Username!</small>
+                <small class="text-danger" ng-show="signupForm.username.$error.required">This field is required!</small>
+                {% verbatim %}
+                <small class="text-danger" ng-show="userError.status">{{ userError.Error }}</small>
+                {% endverbatim %}
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Email address</label>
+              <input type="email" class="form-control" name="email" aria-describedby="emailHelp" placeholder="Enter Email" ng-model="user.email" ng-pattern="/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/" required>
+              <div class="" ng-if='signupForm.email.$dirty'>
+                <small class="text-danger" ng-show="signupForm.email.$error.pattern">Not a valid email!</small>
+                <small class="text-danger" ng-show="signupForm.email.$error.required">This field is required!</small>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="phone" class="form-control" name="phone" aria-describedby="emailHelp" placeholder="Enter Phone" ng-model='user.phone' ng-minlength="10"
+             ng-maxlength="10"  ng-pattern="/^[0-9]*$/" required>
+             <div class="" ng-if='signupForm.phone.$dirty'>
+               <small class="text-danger" ng-show="signupForm.phone.$error.pattern">Not a phone number!</small>
+               <small class="text-danger" ng-show="signupForm.phone.$error.minlength">Not 10 digit number!</small>
+               <small class="text-danger" ng-show="signupForm.phone.$error.maxlength">Not more than 10!</small>
+               <small class="text-danger" ng-show="signupForm.phone.$error.required">This field is required!</small>
+             </div>
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" class="form-control" name="password" placeholder="Password" ng-model="user.password" ng-pattern="/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{6,}$/" ng-minlength="6" required>
+              <div class="" ng-if='signupForm.password.$dirty'>
+                <small class="text-danger" ng-show="signupForm.password.$error.minlength">Minimum length 6!</small>
+                <small class="text-danger" ng-show="signupForm.password.$error.required">This field is required!</small>
+                <small class="text-danger" ng-show="signupForm.password.$error.pattern">Use one special character $@$!%*# letter and number!</small>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Confirm Password</label>
+              <input type="password" class="form-control" name="confirmPassword" placeholder="Confirm Password" ng-model="confirmPassword" compare-to="user.password" required>
+              <div class="" ng-if='signupForm.confirmPassword.$dirty'>
+                <small class="text-danger" ng-show="signupForm.confirmPassword.$error.compareTo">Password doesn't match!</small>
+                <small class="text-danger" ng-show="signupForm.confirmPassword.$error.required">This field is required!</small>
+              </div>
+            </div>
+
+            <button class="btn btn-success btn-lg btn-block py-0 bg-dark-blue" ng-disabled="signupForm.$error.required || signupForm.email.$error.pattern || signupForm.phone.$error.pattern || signupForm.phone.$error.minlength || signupForm.phone.$error.maxlength || signupForm.phone.$error.required || signupForm.password.$error.required || signupForm.confirmPassword.$error.compareTo || signupForm.username.$error.required">Register</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
