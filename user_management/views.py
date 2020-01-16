@@ -9,14 +9,18 @@ from rest_framework import authentication
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, get_user_model
+from django.conf import settings
+from django.contrib.auth import authenticate, get_user_model, login
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import redirect
+from django.urls import reverse
 from .models import ExtendedUser
+from core.views import MixinView
+
+
 # Create your views here.
-
-
-class LandingPage(APIView):
+class LandingPage(MixinView, APIView):
 
     def get(self, request):
         title = "DSS 2.0"
@@ -96,12 +100,15 @@ class LoginList(APIView):
         password = request.data.get('password', None)
 
         print(username)
-        if authenticate(username=username, password=password):
-            user = ExtendedUser.objects.get(username=username)
-
-            return Response({'id': user.id})
+        user = authenticate(username=username, password=password)
+        if user.is_authenticated:
+            login(request, user)
+            print(user.username)
+            #return HttpResponseRedirect('/mp/map')
+            return redirect(to=reverse('map'))
+            #return Response({"Error": "valid login  details"})
 
         else:
             return Response({"Error": "Invalid login  details"})
 
-        return Response(jwt_token)
+        return Response({"Error": "Invalidww login  details"})
