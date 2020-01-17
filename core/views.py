@@ -25,4 +25,4 @@ class MixinView(View):
         """
         if self.request.user.is_authenticated:
             return redirect(reverse('map'))
-        return super().dispatch(*args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
