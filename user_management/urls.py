@@ -18,8 +18,9 @@ from django.urls import path
 from user_management import views
 
 urlpatterns = [
-    path('', views.LandingPage.as_view()),
+    path('', views.LandingPage.as_view(), name='login_page'),
     path('register', views.RegisterartionPage.as_view()),
     path('create_account', views.SignupList.as_view()),
     path('login', views.LoginList.as_view()),
+    path('logout', views.logout),
 ]

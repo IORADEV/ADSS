@@ -10,7 +10,7 @@ from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from django.contrib.auth import authenticate, get_user_model, login
+from django.contrib.auth import authenticate, get_user_model, login, logout as auth_logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
@@ -23,13 +23,15 @@ from core.views import MixinView
 class LandingPage(MixinView, APIView):
 
     def get(self, request):
+
         title = "DSS 2.0"
         return render(request, 'index.html', {'title': title})
 
 
-class RegisterartionPage(APIView):
+class RegisterartionPage(MixinView, APIView):
 
     def get(self, request):
+
         title = "DSS 2.0"
         return render(request, 'registeration.html', {'title': title})
 
@@ -88,7 +90,7 @@ Returns JWT Token for Authentication
 '''
 
 
-class LoginList(APIView):
+class LoginList(MixinView, APIView):
 
     def post(self, request):
 
@@ -104,11 +106,19 @@ class LoginList(APIView):
         if user.is_authenticated:
             login(request, user)
             print(user.username)
-            #return HttpResponseRedirect('/mp/map')
-            return redirect(to=reverse('map'))
+            return Response({settings.LOGIN_REDIRECT_URL})
+            #redirect(reverse('map'))
             #return Response({"Error": "valid login  details"})
 
         else:
             return Response({"Error": "Invalid login  details"})
 
         return Response({"Error": "Invalidww login  details"})
+
+
+def logout(request):
+    # Log out the user.
+    if request.user.is_authenticated:
+        auth_logout(request)
+    # Return to homepage.
+    return HttpResponseRedirect(reverse('login_page'))
