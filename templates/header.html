@@ -22,5 +22,10 @@ Support System (ADSS)
             <a class="nav-link" href="#">Anonymous</a>
         {% endif %}
     </li>
+      <li class="nav-item">
+          {% if user.is_authenticated %}
+            <a class="nav-link" href="/v1/logout">Logout</a>
+          {% endif %}
+      </li>
   </ul>
 </nav>

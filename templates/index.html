@@ -17,7 +17,7 @@
     <script type="text/javascript">
 
       var app = angular.module('dss', []);
-      app.controller('test_ctrl', function ($scope, $http) {
+      app.controller('test_ctrl', function ($window, $scope, $http) {
 
         $scope.params = {}
         //$scope.req_show = false
@@ -51,9 +51,9 @@
 
             } else {
               $scope.message = data.message;
-              $scope.userError = data.data;
-              console.log($scope.userError)
-              console.log(data)
+              $scope.url = data.data;
+              console.log($scope.url)
+              $window.location.href = data.data;
             }
           });
         };
