@@ -19,6 +19,7 @@ from user_management import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('core.urls')),
     path('v1/', include('user_management.urls')),
     path('mp/', include('map.urls')),
 ]
