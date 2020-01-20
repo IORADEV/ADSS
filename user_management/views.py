@@ -42,7 +42,7 @@ Return Success message, Provided contact number not already registered
 '''
 
 
-class SignupList(APIView):
+class SignupList(MixinView, APIView):
 
     def post(self, request, *args, **kwargs):
 
