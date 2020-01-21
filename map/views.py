@@ -20,12 +20,9 @@ class MapView(APIView):
     def get(self, request):
 
         if request.user.is_authenticated:
-
             # redirect(to=reverse('map'))
             print("Logged in")
-
         else:
-
             print("Not logged in")
         title = "DSS 2.0"
         return render(request, 'map.html', {'title': title})
@@ -34,6 +31,5 @@ class MapView(APIView):
 class ResultView(APIView):
 
     def get(self, response):
-
         title = "DSS 2.0"
         return render(response, 'result.html', {'title': title})
