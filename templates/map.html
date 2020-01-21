@@ -24,12 +24,13 @@
 
 <div class="container-fluid">
   <div class="row my-5 px-4" style="height: 80vh">
+    {% if not user.is_authenticated  %}
     <div class="col-3">
       <div class="row">
         <div class="col-12">
           <h5>Select Location</h5>
-          <small>*After selection of District & Taluk,
-Please choose a point on the map</small>
+          <small>*After selection of Division & Range,
+Please choose a point on the map {{user.user_type}}</small>
         </div>
       </div>
       <div class="row mt-5">
@@ -62,6 +63,79 @@ Please choose a point on the map</small>
       </div>
 
     </div>
+    {% endif %}
+
+    {% if user.user_type == 'FR'  %}
+    <div class="col-3">
+      <div class="row">
+        <div class="col-12">
+          <h5>Select Location</h5>
+          <small>*After selection of District & Taluk,
+Please choose a point on the map</small>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-12">
+          <form>
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">Select Division</label>
+              <select class="form-control">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">Select Range</label>
+              <select class="form-control">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">Select Round</label>
+              <select class="form-control">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">Select Beat</label>
+              <select class="form-control">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">Select Compartment</label>
+              <select class="form-control">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+            <button type="button" class="btn bg-dark-blue btn-lg btn-block py-1 rounded-0 text-white">Submit</button>
+
+          </form>
+        </div>
+      </div>
+
+    </div>
+    {% endif %}
+
     <div class="col-9">
       <div id='map'></div>
     </div>
