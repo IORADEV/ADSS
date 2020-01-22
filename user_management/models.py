@@ -15,7 +15,7 @@ class ExtendedUser(AbstractUser):
         (NURSERY, 'nursery')
     )
 
-    phone = models.IntegerField(null=True)
+    phone = models.CharField(max_length=12, null=True)
     user_type = models.CharField(max_length=10, default=1, choices=USER_CHOICES)
 
     def __str__(self):
