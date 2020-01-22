@@ -36,7 +36,7 @@ class RedirectView(View):
             Extends:
                 View
     """
-    @staticmethod
+    #@staticmethod
     def get(self, request, *args, **kwargs):
         """ The purpose of this method is to return a response for this
                 view.
