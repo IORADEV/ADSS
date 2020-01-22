@@ -11,7 +11,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model, login, logout as auth_logout
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, SuspiciousOperation
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -76,9 +76,9 @@ class SignupList(MixinView, APIView):
                 user.set_password(password)
                 user.save()
 
+            except SuspiciousOperation as so:
 
-            except:
-                return Response({"Error": "Username already exists"})
+                return Response(so)
 
         return Response({'User Created'})
 
