@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'core',
     'user_management',
     'map',
+    'dbrouter',
 ]
 
 MIDDLEWARE = [
@@ -94,9 +95,11 @@ DATABASES = {
         'USER': os.getenv("HOST_USER"),
         'PASSWORD': os.getenv("PASSWORD"),
         'PORT': os.getenv("PORT"),
-    }
+    },
+    'geoserver': {}
 }
 
+DATABASE_ROUTERS = ['dbrouter.db.AuthRouter', 'dbrouter.db.PrimaryReplicaRouter']
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
