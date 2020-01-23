@@ -87,8 +87,8 @@ WSGI_APPLICATION = 'dss.wsgi.application'
    },
    '''
 DATABASES = {
-
-    'default': {
+    'default': {},
+    'primary': {
         'ENGINE': os.getenv("ENGINE"),
         'NAME': os.getenv("NAME"),
         'HOST': os.getenv("HOST"),

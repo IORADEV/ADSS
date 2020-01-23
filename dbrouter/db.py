@@ -4,20 +4,20 @@ class PrimaryReplicaRouter:
         """
         Reads go to a randomly-chosen replica.
         """
-        return 'default'
+        return 'primary'
 
     def db_for_write(self, model, **hints):
         """
         Writes always go to primary.
         """
-        return 'default'
+        return 'primary'
 
     def allow_relation(self, obj1, obj2, **hints):
         """
         Relations between objects are allowed if both objects are
         in the primary/replica pool.
         """
-        db_list = ('default', 'geoserver')
+        db_list = ('primary', 'geoserver')
         if obj1._state.db in db_list and obj2._state.db in db_list:
             return True
         return None
