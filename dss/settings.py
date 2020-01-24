@@ -32,6 +32,7 @@ AUTH_USER_MODEL = 'user_management.ExtendedUser'
 
 LOGIN_REDIRECT_URL = "/mp/map"
 LOGOUT_REDIRECT_URL = "/v1"
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
