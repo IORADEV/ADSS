@@ -34,14 +34,15 @@ class GoeServerDBRouter:
     A router to control all database operations on models in the
     auth and contenttypes applications.
     """
-    route_app_labels = {'auth', 'contenttypes'}
+    route_app_labels = {'map'}
 
     def db_for_read(self, model, **hints):
         """
         Attempts to read auth and contenttypes models go to auth_db.
         """
+        #print("geo")
         if model._meta.app_label in self.route_app_labels:
-            return 'auth_db'
+            return 'geoserver'
         return None
 
     def db_for_write(self, model, **hints):
@@ -49,7 +50,7 @@ class GoeServerDBRouter:
         Attempts to write auth and contenttypes models go to auth_db.
         """
         if model._meta.app_label in self.route_app_labels:
-            return 'auth_db'
+            return 'geoserver'
         return None
 
     def allow_relation(self, obj1, obj2, **hints):
@@ -70,5 +71,5 @@ class GoeServerDBRouter:
         'auth_db' database.
         """
         if app_label in self.route_app_labels:
-            return db == 'auth_db'
+            return db == 'geoserver'
         return None
