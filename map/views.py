@@ -13,6 +13,9 @@ from django.contrib.auth import authenticate, get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 
 from user_management.models import ExtendedUser
+from .models import TvmRange4326
+
+from .serializers import TvmRangeSerializers
 
 
 class MapView(APIView):
@@ -33,3 +36,16 @@ class ResultView(APIView):
     def get(self, response):
         title = "DSS 2.0"
         return render(response, 'result.html', {'title': title})
+
+
+class TmvRangeView(APIView):
+
+    def get(self, response):
+        print("start")
+        queryset = TvmRange4326.objects.all()
+        print(queryset)
+        #print(query)
+        print("end")
+        serializer = TvmRangeSerializers(queryset)
+        print(serializer.data)
+        return Response(serializer.data)
