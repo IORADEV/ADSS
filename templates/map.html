@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
     {% load static %}
     <link rel="stylesheet" href='{% static "stylesheet.css" %}'>
     <title>{{ title }}</title>
@@ -148,11 +150,9 @@ Please choose a point on the map</small>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script>
-    	var landscapes = L.layerGroup();
+    		var landscapes = L.layerGroup();
 
             L.marker([10.85, 76.27]).bindPopup('Kerala Division, CO.').addTo(landscapes);
-            L.marker([18, 79]).bindPopup('Telangana Division, CO.').addTo(landscapes);
-            L.marker([25,85]).bindPopup('Bihar Division, CO.').addTo(landscapes);
 
 
             var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
@@ -163,20 +163,199 @@ Please choose a point on the map</small>
             var grayscale = L.tileLayer(mbUrl, {id: 'mapbox.light', attribution: mbAttr});
             var streets  = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr});
 
-           var lulcLayer_andhra = L.tileLayer.wms("https://bhuvan-vec2.nrsc.gov.in/bhuvan/wms", {
-                layers: 'lulc:AP_LULC50K_1112',
-                format: 'image/png',
-                transparent: true
-              });
-    		var test_layer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+        ///////////////////////////
+            var stateBoundary = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {//State Boundary-Kerala
                 layers: 'dss:kerala_state',
                 format: 'image/png',
                 transparent: true
              });
+		   var divisionBoundary = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:tvm_division',
+                format: 'image/png',
+                transparent: true
+             });
+			 //Range
+			 	var rangeBoundary = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:tvm_range_4326',
+                format: 'image/png',
+                transparent: true
+             });
+			 //Section
+			 	var sectionLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:tvm_section_4326',
+                format: 'image/png',
+                transparent: true
+             });
+			 //Drainage
+			 	var drainageLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:tvm_drainage_4326',
+                format: 'image/png',
+                transparent: true
+             });
+			 //additional layers
+			 //soil moisture 2018 august
+			 	var soilmoistureaugLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:sm_aug_2018',
+                format: 'image/png',
+                transparent: true
+             });
+			 //aspect trivandrum
+			 	var aspectLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:Aspect_triva',
+                format: 'image/png',
+                transparent: true
+             });
+			 //agroecological zone
+			 	var agroecoLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:ae_zone_type_4326',
+                format: 'image/png',
+                transparent: true
+             });
+			 //basin tvm
+			 	var basinLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:basin_thiruv_02_01_2020',
+                format: 'image/png',
+                transparent: true
+             });
+			 //canopy density
+			 	var canopydensityLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:canopydensity_tvm',
+                format: 'image/png',
+                transparent: true
+             });
+			 //elevation
+			 	var elevationLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:elevation_st',
+                format: 'image/png',
+                transparent: true
+             });
+			 //forestcover
+			 	var forestcoverLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:forestcover',
+                format: 'image/png',
+                transparent: true
+             });
+			 //groundwater
+			 	var groundwaterLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:groundwater',
+                format: 'image/png',
+                transparent: true
+             });
+			 //lulc
+			 	var lulcLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:lulc',
+                format: 'image/png',
+                transparent: true
+             });
+			 //slope_tvm
+			 	var slopeLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:slope_tvm',
+                format: 'image/png',
+                transparent: true
+             });
+			 //rainfall
+			 	var rainfallLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:rainfall',
+                format: 'image/png',
+                transparent: true
+             });
+			 //soil moisture 2018 dec
+			 	var soilmoisturedecLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:sm_dec_2018',
+                format: 'image/png',
+                transparent: true
+             });
+			 //soil moisture 2018 feb
+			 	var soilmoisturefebLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:sm_feb_2018',
+                format: 'image/png',
+                transparent: true
+             });
+			 //soil moisture 2018 jan
+			 	var soilmoisturejanLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:sm_jan_2018',
+                format: 'image/png',
+                transparent: true
+             });
+			 //soil moisture 2018 jul
+			 	var soilmoisturejulLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:sm_jul_2018',
+                format: 'image/png',
+                transparent: true
+             });
+			 //soil moisture 2018 jun
+			 	var soilmoisturejunLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:sm_jun_2018',
+                format: 'image/png',
+                transparent: true
+             });
+			 //soil moisture 2018 mar
+			 	var soilmoisturemarLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:sm_mar_2018',
+                format: 'image/png',
+                transparent: true
+             });
+			 //soil moisture 2018 may
+			 	var soilmoisturemayLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:sm_may_2018',
+                format: 'image/png',
+                transparent: true
+             });
+			 //soil moisture 2018 nov
+			 	var soilmoisturenovLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:sm_nov_2018',
+                format: 'image/png',
+                transparent: true
+             });
+			 //soil moisture 2018 oct
+			 	var soilmoistureoctLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:sm_oct_2018',
+                format: 'image/png',
+                transparent: true
+             });
+			 //soil moisture 2018 sept
+			 	var soilmoistureseptLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:sm_sept_2018',
+                format: 'image/png',
+                transparent: true
+             });
+			 //temperature
+			 	var tempLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:temperature',
+                format: 'image/png',
+                transparent: true
+             });
+			 //soil texture
+			 	var soiltextureLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:soil_texture_21_01_2020',
+                format: 'image/png',
+                transparent: true
+             });
+			 //sacred groves tvm
+			 	var sacredgrovesLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:thiruv_sacredgroves_16_01_2020',
+                format: 'image/png',
+                transparent: true
+             });
+			 //soil vector
+			 	var soilLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:tvm_soil_4326',
+                format: 'image/png',
+                transparent: true
+             });
+			 //watershed
+			 	var watershedLayer = L.tileLayer.wms("http://13.233.196.56:8080/geoserver/dss/wms", {
+                layers: 'dss:tvm_watershed_4326',
+                format: 'image/png',
+                transparent: true
+             });
+
+
+		/////////////////////////
             var map = L.map('map', {
               center: [23, 76],
               zoom: 4,
-              layers: [streets, landscapes,lulcLayer_andhra, test_layer]
+              layers: [streets,stateBoundary,divisionBoundary,rangeBoundary,sectionLayer,drainageLayer,soilmoistureaugLayer,aspectLayer,agroecoLayer,basinLayer,canopydensityLayer,elevationLayer,forestcoverLayer,groundwaterLayer,lulcLayer,slopeLayer,rainfallLayer,soilmoisturedecLayer,soilmoisturefebLayer,soilmoisturejanLayer,soilmoisturejulLayer,soilmoisturejunLayer,soilmoisturemarLayer,soilmoisturemayLayer,soilmoisturenovLayer,soilmoistureoctLayer,soilmoistureseptLayer,tempLayer,soiltextureLayer,sacredgrovesLayer,soilLayer,watershedLayer,soilLayer,watershedLayer]
             });
             map.options.maxZoom = 14;
             map.options.minZoom = 4;
@@ -187,11 +366,59 @@ Please choose a point on the map</small>
 
             };
             var overlays = {
-              "landscapes": landscapes,
-    		      "Land Use/Land Cover":lulcLayer_andhra
+    		  "State Boundary":stateBoundary,
+			   "Division Boundary":divisionBoundary,
+			    "Range Boundary":rangeBoundary,
+				 "Sections":sectionLayer,
+				  "Drainage":drainageLayer,
+				  "Aspect":aspectLayer,
+				  "Agro-ecological":agroecoLayer,
+				  "River Basin":basinLayer,
+				  "Canopy Density":canopydensityLayer,
+				  "Elevation":elevationLayer,
+				  "Forest Cover":forestcoverLayer,
+				  "Groundwater":groundwaterLayer,
+				  "LULC":lulcLayer,
+				  "Slope":slopeLayer,
+				  "Temperature":tempLayer,
+				  "Rainfall":rainfallLayer,
+				  "Soil Moist Jan18":soilmoisturejanLayer,
+				  "Soil Moist Feb18":soilmoisturefebLayer,
+				  "Soil Moist Mar18":soilmoisturemarLayer,
+				  "Soil Moist May18":soilmoisturemayLayer,
+				  "Soil Moist Jun18":soilmoisturejunLayer,
+				  "Soil Moist Jul18":soilmoisturejulLayer,
+				  "Soil Moist Aug18":soilmoistureaugLayer,
+				  "Soil Moist Sep18":soilmoistureseptLayer,
+				  "Soil Moist Oct18":soilmoistureoctLayer,
+				  "Soil Moist Nov18":soilmoisturenovLayer,
+				  "Soil Moist Dec18":soilmoisturedecLayer,
+				  "Soil Texture":soiltextureLayer,
+				  "Sacred Groves":sacredgrovesLayer,
+				  "Soil Text Layer":soilLayer,
+				  "Watershed":watershedLayer,
             };
 
             L.control.layers(baseLayers, overlays).addTo(map);
+			////////////// adding drawing controls to the map
+			   var drawnItems = new L.FeatureGroup();
+			   map.addLayer(drawnItems);
+			   var drawControl = new L.Control.Draw({
+				 edit: {
+				   featureGroup: drawnItems
+				 }
+			   });
+			   map.addControl(drawControl);
+			   map.on('draw:created', function(e) {
+				 var type = e.layerType,
+					 layer = e.layer;
+				 if (type === 'marker') {
+				   layer.bindPopup('A popup!');
+				 }
+				 drawnItems.addLayer(layer);
+			   });
+       // adding drawing controls to the map --ends
+
 
 
     </script>
