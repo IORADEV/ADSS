@@ -97,7 +97,14 @@ DATABASES = {
         'PASSWORD': os.getenv("PASSWORD"),
         'PORT': os.getenv("PORT"),
     },
-    'geoserver': {}
+    'geoserver': {
+        'ENGINE': os.getenv("ENGINE"),
+        'NAME': os.getenv("GEO_NAME"),
+        'HOST': os.getenv("HOST"),
+        'USER': os.getenv("HOST_USER"),
+        'PASSWORD': os.getenv("PASSWORD"),
+        'PORT': os.getenv("PORT"),
+    }
 }
 
 DATABASE_ROUTERS = ['dbrouter.db.GoeServerDBRouter', 'dbrouter.db.Dss2DBRouter']
