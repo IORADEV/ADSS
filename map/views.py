@@ -50,7 +50,7 @@ class TmvRangeView(APIView):
         #serializer = TvmRangeSerializers(qs, many=True)
 
         #print(qs.name)
-        return render(request, 'division_dropdown_list.html', {'division': qs})
+        return render(request, {'division': qs})
 
 
 class TmvDivisionView(APIView):
