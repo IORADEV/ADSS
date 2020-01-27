@@ -20,5 +20,6 @@ from map import views
 urlpatterns = [
     path('map', views.MapView.as_view(), name='map'),
     path('result', views.ResultView.as_view()),
+    path('tmvdivision', views.TmvDivisionView.as_view()),
     path('tvmrange', views.TmvRangeView.as_view()),
 ]
