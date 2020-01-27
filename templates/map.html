@@ -23,7 +23,7 @@
   </head>
   <body style="height: 100vh">
   {% include "header.html" %}
-
+{% block container %}
 <div class="container-fluid">
   <div class="row my-5 px-4" style="height: 80vh">
     {% if not user.is_authenticated  %}
@@ -79,24 +79,28 @@ Please choose a point on the map</small>
       <div class="row mt-5">
         <div class="col-12">
           <form>
+
             <div class="form-group">
-              <label for="exampleFormControlSelect1">Select Division</label>
-              <select class="form-control">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-              </select>
+                <label>Select Division</label>
+                <select class="form-control">
+
+                        {% for name in division %}
+                        <option>{{name.name}}</option>
+                        {% endfor %}
+
+
+
+
+                </select>
             </div>
+
+
             <div class="form-group">
               <label for="exampleFormControlSelect1">Select Range</label>
               <select class="form-control">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
+                {% for name in range %}
+                        <option value="{{name.name}}">{{name.name}}</option>
+                {% endfor %}
               </select>
             </div>
             <div class="form-group">
@@ -143,7 +147,7 @@ Please choose a point on the map</small>
     </div>
   </div>
 </div>
-
+{% endblock container %}
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
