@@ -25,8 +25,8 @@ class MapView(APIView):
         title = "DSS 2.0"
         if request.user.is_authenticated:
             # redirect(to=reverse('map'))
-            qs_division = TvmDivision.objects.all()
-            qs_range = TvmRange4326.objects.all()
+            qs_division = TvmDivision.objects.values('name')
+            qs_range = TvmRange4326.objects.values('name')
             context = {'title': title, 'division': qs_division, 'range': qs_range}
             print("Logged in")
         else:
