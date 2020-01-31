@@ -22,4 +22,5 @@ urlpatterns = [
     path('result', views.ResultView.as_view()),
     path('tmvdivision', views.TmvDivisionView.as_view()),
     path('tvmrange', views.TmvRangeView.as_view()),
+    path('tmvsection', views.TmvSectionView.as_view()),
 ]

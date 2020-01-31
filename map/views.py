@@ -14,9 +14,9 @@ from django.contrib.auth import authenticate, get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 
 from user_management.models import ExtendedUser
-from .models import TvmRange4326, TvmDivision
+from .models import TvmRange4326, TvmDivision, TvmSection4326 as TmvSection
 
-from .serializers import TvmRangeSerializers, TmvDivisionSerializers
+from .serializers import TvmRangeSerializers, TmvDivisionSerializers, TmvSectionSerializers
 
 
 class MapView(APIView):
@@ -61,3 +61,17 @@ class TmvDivisionView(APIView):
         serializer = TmvDivisionSerializers(qs, many=True)
 
         return Response(serializer.data)
+
+
+class TmvSectionView(APIView):
+
+    def post(self, request):
+
+        range = request.data.get('range', None)
+        print(range)
+        qs = TmvSection.objects.filter(hq_name=range)
+
+        serializer = TmvSectionSerializers(qs, many=True)
+
+        return Response(serializer.data)
+

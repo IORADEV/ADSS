@@ -11,7 +11,8 @@
     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
-    {% load static %}
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+      {% load static %}
     <link rel="stylesheet" href='{% static "stylesheet.css" %}'>
     <title>{{ title }}</title>
     <style media="screen">
@@ -21,7 +22,43 @@
     }
     </style>
   </head>
-  <body style="height: 100vh">
+  <body style="height: 100vh" ng-app="dssApp">
+    <script>
+
+      var app = angular.module('dssApp', []);
+      app.config(['$httpProvider', function($httpProvider) {
+        $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+        $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+      }]);
+      app.controller('form_ctrl', function ($window, $scope, $http) {
+
+        $scope.search = {}
+        $scope.getSection = function() {
+        //alert($scope.range)
+        $http({
+          method  : 'POST',
+          url     : '/mp/tmvsection',
+          data    : $scope.search,
+          headers : { 'Content-Type': 'application/json' }
+         }).then(function(data) {
+            //alert(data)
+            if (data.errors) {
+
+              $scope.errorUserName = data.errors.username;
+
+            } else {
+              $scope.sections = data.data;
+              //$scope.url = data.data;
+              console.log(data.data)
+              //$window.location.href = data.data;
+            }
+          });
+        };
+
+      });
+
+    </script>
+
   {% include "header.html" %}
 {% block container %}
 <div class="container-fluid">
@@ -78,14 +115,14 @@ Please choose a point on the map</small>
       </div>
       <div class="row mt-5">
         <div class="col-12">
-          <form>
-
+          <form ng-controller="form_ctrl">
+            {% csrf_token %}
             <div class="form-group">
                 <label>Select Division</label>
                 <select class="form-control">
 
                         {% for name in division %}
-                        <option>{{name.name}}</option>
+                        <option value="{{name.name}}">{{name.name}}</option>
                         {% endfor %}
 
 
@@ -95,44 +132,29 @@ Please choose a point on the map</small>
             </div>
 
 
-            <div class="form-group">
+            <div class="form-group" >
               <label for="exampleFormControlSelect1">Select Range</label>
-              <select class="form-control">
+              <select class="form-control" ng-model="search.range" ng-change="getSection()">
+                  <option value="">Select range</option>
                 {% for name in range %}
                         <option value="{{name.name}}">{{name.name}}</option>
                 {% endfor %}
               </select>
             </div>
             <div class="form-group">
-              <label for="exampleFormControlSelect1">Select Round</label>
-              <select class="form-control">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
+              <label for="exampleFormControlSelect1">Select Section</label>
+
+              <select class="form-control" >
+                  <option>Select section</option>
+                  {% verbatim %}
+                  <option ng-repeat="section in sections">{{section.name}}</option>
+                  {% endverbatim %}
+
               </select>
+
             </div>
-            <div class="form-group">
-              <label for="exampleFormControlSelect1">Select Beat</label>
-              <select class="form-control">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="exampleFormControlSelect1">Select Compartment</label>
-              <select class="form-control">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-              </select>
-            </div>
+        
+
             <button type="button" class="btn bg-dark-blue btn-lg btn-block py-1 rounded-0 text-white">Submit</button>
 
           </form>
